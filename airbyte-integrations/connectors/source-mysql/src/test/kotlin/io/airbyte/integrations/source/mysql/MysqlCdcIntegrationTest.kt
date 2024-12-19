@@ -4,6 +4,7 @@
 
 package io.airbyte.integrations.source.mysql
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.airbyte.cdk.StreamIdentifier
 import io.airbyte.cdk.command.CliRunner
 import io.airbyte.cdk.discover.DiscoveredStream
@@ -34,7 +35,7 @@ import org.testcontainers.containers.MySQLContainer
 class MysqlCdcIntegrationTest {
 
     @Test
-    fun testCheck() {
+    fun testBasicCheck() {
         val run1: BufferingOutputConsumer = CliRunner.source("check", config(), null).run()
 
         assertEquals(run1.messages().size, 1)
@@ -42,13 +43,15 @@ class MysqlCdcIntegrationTest {
             run1.messages().first().connectionStatus.status,
             AirbyteConnectionStatus.Status.SUCCEEDED
         )
+    }
 
+    @Test
+    fun testCheckCdcOnNonCdcDb() {
         MysqlContainerFactory.exclusive(
                 imageName = "mysql:8.0",
                 MysqlContainerFactory.WithCdcOff,
             )
             .use { nonCdcDbContainer ->
-                {
                     val invalidConfig: MysqlSourceConfigurationSpecification =
                         MysqlContainerFactory.config(nonCdcDbContainer).apply {
                             setMethodValue(CdcCursor())
@@ -67,13 +70,11 @@ class MysqlCdcIntegrationTest {
                             .messages()
                             .filter { it.type == AirbyteMessage.Type.CONNECTION_STATUS }
                             .first()
-
                     assertEquals(
                         AirbyteConnectionStatus.Status.FAILED,
                         messageInRun2.connectionStatus.status
                     )
                 }
-            }
     }
 
     @Test

@@ -248,9 +248,7 @@ class S3ClientFactory(
 
                 // Fix for connection reset issue:
                 // https://github.com/awslabs/aws-sdk-kotlin/issues/1214#issuecomment-2464831817
-                httpClient {
-                    connectionIdleTimeout = 3.seconds
-                }
+                httpClient { connectionIdleTimeout = 3.seconds }
             }
 
         return S3Client(

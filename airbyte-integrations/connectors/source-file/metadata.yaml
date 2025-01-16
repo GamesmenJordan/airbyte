@@ -6,7 +6,7 @@ data:
     hosts:
       - "*"
   connectorBuildOptions:
-    baseImage: docker.io/airbyte/python-connector-base:3.0.0@sha256:1a0845ff2b30eafa793c6eee4e8f4283c2e52e1bbd44eed6cb9e9abd5d34d844
+    baseImage: docker.io/airbyte/python-connector-base:3.0.1-rc.1@sha256:5b5cbe613691cc61d643a347ee4ba21d6358252f274ebb040ef820c7b9f4a5a7
   connectorSubtype: file
   connectorType: source
   definitionId: 778daa7c-feaf-4db6-96f3-70fd645acc77
